@@ -1,14 +1,16 @@
 const bcrypt = require("bcrypt");
 const gravatar = require("gravatar");
 const {nanoid} = require("nanoid");
+const jwt = require("jsonwebtoken");
 
 const {HttpError} = require("../..//helpers");
 
 const {User} = require("../../models/user");
 
-const {sendEmail} = require("../../helpers");
+// const {sendEmail} = require("../../helpers");
 
-const {BASE_URL} = process.env;
+// const { BASE_URL } = process.env;
+const {SECRET_KEY} = process.env;
 
 const register = async (req, res) => {
   const {email, password} = req.body;
@@ -40,10 +42,14 @@ const register = async (req, res) => {
 
   // await sendEmail(verifyEmail);
 
+  const token = jwt.sign({id: newUser._id}, SECRET_KEY, {expiresIn: "23h"});
+  await User.findByIdAndUpdate(newUser._id, {token});
+
   res.status(201).json({
     status: "Created",
     code: 201,
     data: {
+      token,
       user: {
         email: newUser.email,
         subscription: newUser.subscription,
