@@ -2,6 +2,8 @@ const {User} = require("../..//models/user");
 
 const {HttpError} = require("../..//helpers");
 
+const {FRONTEND_URL} = process.env;
+
 const verifyEmail = async (req, res) => {
   const {verificationToken} = req.params;
 
@@ -16,11 +18,13 @@ const verifyEmail = async (req, res) => {
     verificationToken: null,
   });
 
-  res.json({
-    status: "OK",
-    code: 200,
-    message: "Verification successful",
-  });
+  // res.json({
+  //   status: "OK",
+  //   code: 200,
+  //   message: "Verification successful",
+  // });
+
+  res.redirect(`${FRONTEND_URL}/verify?success=true`);
 };
 
 module.exports = verifyEmail;
